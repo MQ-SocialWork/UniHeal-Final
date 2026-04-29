@@ -6,197 +6,187 @@
 <title>UniHeal Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --teal: #2ABFAA; --teal-light: #E6F8F5; --teal-dark: #1A9E8C;
-    --rose: #F56B6B; --amber: #F5A623; --amber-light: #FEF3DC;
-    --emerald: #2ECC8F; --violet: #9B6BF5;
-    --slate-800: #1E293B; --slate-700: #334155; --slate-600: #475569;
-    --slate-500: #64748B; --slate-400: #94A3B8; --slate-200: #E2E8F0;
-    --slate-100: #F1F5F9; --slate-50: #F8FAFC; --white: #FFFFFF;
-    --font-d: 'Quicksand', sans-serif; --font-b: 'DM Sans', sans-serif;
-    --radius: 14px; --shadow: 0 4px 20px rgba(0,0,0,0.08);
-  }
-  body { font-family: var(--font-b); background: var(--slate-50); color: var(--slate-700); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#2ABFAA;--teal-light:#E6F8F5;--teal-dark:#1A9E8C;
+  --rose:#F56B6B;--amber:#F5A623;--amber-light:#FEF3DC;
+  --emerald:#2ECC8F;--violet:#9B6BF5;
+  --slate-800:#1E293B;--slate-700:#334155;--slate-600:#475569;
+  --slate-500:#64748B;--slate-400:#94A3B8;--slate-200:#E2E8F0;
+  --slate-100:#F1F5F9;--slate-50:#F8FAFC;
+  --font-d:'Quicksand',sans-serif;--font-b:'DM Sans',sans-serif;
+  --radius:14px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700);min-height:100vh}
 
-  /* ── Login ── */
-  .login-wrap {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(145deg, #EEF9F7, #EBF5FF);
-  }
-  .login-card {
-    background: white; border-radius: 20px; padding: 40px; width: 360px;
-    box-shadow: 0 8px 40px rgba(42,191,170,0.15); text-align: center;
-  }
-  .login-logo { font-size: 40px; margin-bottom: 12px; }
-  .login-title { font-family: var(--font-d); font-size: 22px; font-weight: 700; color: var(--slate-800); margin-bottom: 4px; }
-  .login-sub { font-size: 13px; color: var(--slate-500); margin-bottom: 28px; }
-  .login-input {
-    width: 100%; padding: 12px 16px; border: 1.5px solid var(--slate-200);
-    border-radius: 10px; font-size: 14px; font-family: var(--font-b);
-    outline: none; transition: border-color 0.2s; margin-bottom: 14px;
-    text-align: center; letter-spacing: 3px;
-  }
-  .login-input:focus { border-color: var(--teal); }
-  .login-btn {
-    width: 100%; padding: 13px; background: var(--teal); color: white;
-    border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
-    font-family: var(--font-d); cursor: pointer; transition: background 0.2s;
-  }
-  .login-btn:hover { background: var(--teal-dark); }
-  .login-error { color: var(--rose); font-size: 12px; margin-top: 10px; }
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#EEF9F7,#EBF5FF)}
+.login-card{background:#fff;border-radius:20px;padding:40px;width:360px;box-shadow:0 8px 40px rgba(42,191,170,0.15);text-align:center}
+.login-logo{font-size:40px;margin-bottom:12px}
+.login-title{font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--slate-800);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--slate-500);margin-bottom:28px}
+.login-input{width:100%;padding:12px 16px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:14px;font-family:var(--font-b);outline:none;transition:border-color .2s;margin-bottom:14px;text-align:center;letter-spacing:3px}
+.login-input:focus{border-color:var(--teal)}
+.login-btn{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--font-d);cursor:pointer;transition:background .2s}
+.login-btn:hover{background:var(--teal-dark)}
+.login-btn:disabled{opacity:.6;cursor:not-allowed}
+.login-error{color:var(--rose);font-size:12px;margin-top:10px;min-height:18px}
 
-  /* ── Layout ── */
-  .admin-wrap { display: none; }
-  .topbar {
-    background: var(--slate-800); color: white; padding: 0 28px;
-    height: 56px; display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-d); font-weight: 700; font-size: 16px; }
-  .topbar-right { display: flex; align-items: center; gap: 16px; }
-  .topbar-user { font-size: 12px; color: #94A3B8; }
-  .btn-logout { background: none; border: 1px solid #475569; color: #94A3B8; border-radius: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: var(--font-b); }
-  .btn-logout:hover { border-color: var(--rose); color: var(--rose); }
+/* Layout */
+.admin-wrap{display:none}
+.topbar{background:var(--slate-800);color:#fff;padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px}
+.topbar-brand{font-family:var(--font-d);font-weight:700;font-size:15px;white-space:nowrap}
+.topbar-mid{display:flex;align-items:center;gap:8px;flex:1;justify-content:center}
+.topbar-right{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.poll-indicator{display:flex;align-items:center;gap:5px;font-size:11px;color:#94A3B8}
+.poll-dot{width:7px;height:7px;border-radius:50%;background:#2ECC8F;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.last-update{font-size:11px;color:#64748B}
+.btn-logout{background:none;border:1px solid #475569;color:#94A3B8;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--font-b)}
+.btn-logout:hover{border-color:var(--rose);color:var(--rose)}
+.main{max-width:1100px;margin:0 auto;padding:24px}
 
-  .main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.stat-box{background:#fff;border-radius:var(--radius);padding:18px;text-align:center;box-shadow:var(--shadow);transition:transform .2s}
+.stat-box:hover{transform:translateY(-2px)}
+.stat-val{font-family:var(--font-d);font-size:30px;font-weight:700;transition:all .3s}
+.stat-val.teal{color:var(--teal)}.stat-val.amber{color:var(--amber)}
+.stat-val.emerald{color:var(--emerald)}.stat-val.violet{color:var(--violet)}.stat-val.rose{color:var(--rose)}
+.stat-label{font-size:11px;color:var(--slate-500);margin-top:5px}
+.stat-box.highlight{animation:flashStat .5s ease}
+@keyframes flashStat{0%{box-shadow:0 0 0 3px rgba(42,191,170,0.4)}100%{box-shadow:var(--shadow)}}
 
-  /* ── Stats ── */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
-  .stat-box { background: white; border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow); }
-  .stat-box-val { font-family: var(--font-d); font-size: 32px; font-weight: 700; }
-  .stat-box-val.teal   { color: var(--teal); }
-  .stat-box-val.amber  { color: var(--amber); }
-  .stat-box-val.rose   { color: var(--rose); }
-  .stat-box-val.violet { color: var(--violet); }
-  .stat-box-val.emerald{ color: var(--emerald); }
-  .stat-box-label { font-size: 12px; color: var(--slate-500); margin-top: 6px; }
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.toolbar-title{font-family:var(--font-d);font-size:17px;font-weight:700;color:var(--slate-800);flex:1;min-width:140px}
+.filter-btn{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--slate-200);background:#fff;color:var(--slate-600);cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.filter-btn:hover{border-color:var(--teal);color:var(--teal)}
+.filter-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-refresh{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;background:var(--slate-100);border:none;color:var(--slate-600);cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.btn-refresh:hover{background:var(--slate-200)}
+.btn-refresh.spinning svg{animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ── Toolbar ── */
-  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
-  .toolbar-title { font-family: var(--font-d); font-size: 18px; font-weight: 700; color: var(--slate-800); flex: 1; }
-  .filter-btn {
-    padding: 7px 16px; border-radius: 99px; font-size: 12px; font-weight: 600;
-    border: 1.5px solid var(--slate-200); background: white; color: var(--slate-600);
-    cursor: pointer; font-family: var(--font-b); transition: all 0.2s;
-  }
-  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .filter-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
-  .btn-refresh {
-    padding: 7px 16px; border-radius: 99px; font-size: 12px; font-weight: 600;
-    background: var(--slate-100); border: none; color: var(--slate-600);
-    cursor: pointer; font-family: var(--font-b); transition: all 0.2s; display: flex; align-items: center; gap: 5px;
-  }
-  .btn-refresh:hover { background: var(--slate-200); }
+/* Search */
+.search-wrap{position:relative;margin-bottom:16px}
+.search-input{width:100%;padding:10px 16px 10px 38px;border:1.5px solid var(--slate-200);border-radius:10px;font-size:13px;font-family:var(--font-b);outline:none;transition:border-color .2s;background:#fff}
+.search-input:focus{border-color:var(--teal)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--slate-400);font-size:14px}
 
-  /* ── Post Cards ── */
-  .posts-grid { display: flex; flex-direction: column; gap: 12px; }
-  .post-card {
-    background: white; border-radius: var(--radius); padding: 20px;
-    box-shadow: var(--shadow); border-left: 4px solid var(--slate-200);
-    transition: border-color 0.2s;
-  }
-  .post-card.pending  { border-left-color: var(--amber); }
-  .post-card.approved { border-left-color: var(--emerald); }
-  .post-card.deleted  { border-left-color: var(--rose); opacity: 0.6; }
+/* Posts */
+.posts-grid{display:flex;flex-direction:column;gap:10px}
+.post-card{background:#fff;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border-left:4px solid var(--slate-200);transition:all .2s;animation:slideIn .25s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.post-card.pending{border-left-color:var(--amber)}
+.post-card.approved{border-left-color:var(--emerald)}
+.post-card.new-post{animation:newPost .6s ease}
+@keyframes newPost{0%{background:#E6F8F5}100%{background:#fff}}
+.post-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.post-meta{flex:1;min-width:0}
+.post-id{font-size:10px;color:var(--slate-400);font-family:monospace;margin-bottom:4px}
+.post-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px}
+.badge{border-radius:99px;padding:2px 9px;font-size:11px;font-weight:600}
+.badge-pending{background:var(--amber-light);color:#B87A0A}
+.badge-approved{background:#D1FAE5;color:#065F46}
+.badge-cat{background:var(--teal-light);color:var(--teal-dark)}
+.post-details{display:flex;gap:12px;flex-wrap:wrap}
+.post-details span{font-size:11px;color:var(--slate-400)}
+.post-body{font-size:13px;line-height:1.75;color:var(--slate-700);background:var(--slate-50);border-radius:9px;padding:12px;margin-bottom:12px;white-space:pre-wrap;word-break:break-word}
+.post-actions{display:flex;gap:7px}
+.btn-approve{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;background:#D1FAE5;color:#065F46;border:none;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.btn-approve:hover:not(:disabled){background:#A7F3D0}
+.btn-approve:disabled{opacity:.5;cursor:not-allowed}
+.btn-delete{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;background:#FFE4E6;color:#9F1239;border:none;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.btn-delete:hover:not(:disabled){background:#FECDD3}
+.btn-delete:disabled{opacity:.5;cursor:not-allowed}
 
-  .post-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-  .post-meta { flex: 1; }
-  .post-id   { font-size: 10px; color: var(--slate-400); font-family: monospace; margin-bottom: 4px; }
-  .post-info { display: flex; gap: 8px; flex-wrap: wrap; }
-  .badge { border-radius: 99px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
-  .badge-pending  { background: var(--amber-light);  color: #B87A0A; }
-  .badge-approved { background: #D1FAE5; color: #065F46; }
-  .badge-cat      { background: var(--teal-light);   color: var(--teal-dark); }
-  .post-time { font-size: 11px; color: var(--slate-400); }
-  .post-session { font-size: 11px; color: var(--slate-400); font-family: monospace; }
+/* New badge */
+.badge-new{background:#FEF3DC;color:#B87A0A;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;margin-left:4px;animation:blink 1s ease 3}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-  .post-content-text {
-    font-size: 14px; line-height: 1.7; color: var(--slate-700);
-    background: var(--slate-50); border-radius: 10px; padding: 14px;
-    margin-bottom: 14px;
-  }
+/* States */
+.empty{text-align:center;padding:50px 24px;color:var(--slate-400);font-size:14px;line-height:2}
+.loading-box{text-align:center;padding:50px}
+.spinner{width:32px;height:32px;border:3px solid var(--teal-light);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
 
-  .post-actions { display: flex; gap: 8px; }
-  .btn-approve {
-    display: flex; align-items: center; gap: 5px;
-    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
-    background: #D1FAE5; color: #065F46; border: none; cursor: pointer;
-    font-family: var(--font-b); transition: all 0.2s;
-  }
-  .btn-approve:hover { background: #A7F3D0; }
-  .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-delete {
-    display: flex; align-items: center; gap: 5px;
-    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
-    background: #FFE4E6; color: #9F1239; border: none; cursor: pointer;
-    font-family: var(--font-b); transition: all 0.2s;
-  }
-  .btn-delete:hover { background: #FECDD3; }
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--slate-800);color:#fff;border-radius:99px;padding:11px 22px;font-size:13px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:#065F46}
+.toast.error{background:#9F1239}
 
-  /* ── Empty / Loading ── */
-  .empty { text-align: center; padding: 60px 24px; color: var(--slate-400); font-size: 14px; }
-  .loading { text-align: center; padding: 60px; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--teal-light); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── Toast ── */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
-    background: var(--slate-800); color: white; border-radius: 99px;
-    padding: 12px 24px; font-size: 13px; z-index: 999;
-    opacity: 0; transition: all 0.3s; pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* Pending alert */
+.pending-alert{background:linear-gradient(135deg,#FEF3DC,#fff7e6);border:1.5px solid #F5A623;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;color:#B87A0A;font-weight:600;display:none}
+.pending-alert.show{display:flex}
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ────────────────────────────────────── -->
+<!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-card">
     <div class="login-logo">🛡️</div>
     <div class="login-title">UniHeal Admin</div>
     <div class="login-sub">Nhập mật khẩu để tiếp tục</div>
-    <input class="login-input" type="password" id="pwd-input" placeholder="••••••••"
-      onkeydown="if(event.key==='Enter') doLogin()">
-    <button class="login-btn" onclick="doLogin()">Đăng nhập</button>
+    <input class="login-input" type="password" id="pwd-input" placeholder="••••••••">
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Đăng nhập</button>
     <div class="login-error" id="login-error"></div>
   </div>
 </div>
 
-<!-- ── ADMIN ─────────────────────────────────────── -->
+<!-- ADMIN -->
 <div class="admin-wrap" id="admin-wrap">
   <div class="topbar">
     <div class="topbar-brand">💚 UniHeal Admin</div>
+    <div class="topbar-mid">
+      <div class="poll-indicator">
+        <div class="poll-dot"></div>
+        Tự động cập nhật
+      </div>
+      <span class="last-update" id="last-update"></span>
+    </div>
     <div class="topbar-right">
-      <span class="topbar-user">🟢 Đang hoạt động</span>
       <button class="btn-logout" onclick="doLogout()">Đăng xuất</button>
     </div>
   </div>
 
   <div class="main">
     <!-- Stats -->
-    <div class="stats-row" id="stats-row">
-      <div class="stat-box"><div class="stat-box-val teal" id="st-total">—</div><div class="stat-box-label">Tổng bài đăng</div></div>
-      <div class="stat-box"><div class="stat-box-val amber" id="st-pending">—</div><div class="stat-box-label">Chờ duyệt</div></div>
-      <div class="stat-box"><div class="stat-box-val emerald" id="st-approved">—</div><div class="stat-box-label">Đã duyệt</div></div>
-      <div class="stat-box"><div class="stat-box-val violet" id="st-assess">—</div><div class="stat-box-label">Lượt sàng lọc</div></div>
-      <div class="stat-box"><div class="stat-box-val rose" id="st-comments">—</div><div class="stat-box-label">Bình luận</div></div>
+    <div class="stats-row">
+      <div class="stat-box" id="box-total">  <div class="stat-val teal"    id="st-total">—</div>  <div class="stat-label">Tổng bài đăng</div></div>
+      <div class="stat-box" id="box-pending"><div class="stat-val amber"   id="st-pending">—</div><div class="stat-label">Chờ duyệt</div></div>
+      <div class="stat-box" id="box-app">    <div class="stat-val emerald" id="st-approved">—</div><div class="stat-label">Đã duyệt</div></div>
+      <div class="stat-box" id="box-assess"> <div class="stat-val violet"  id="st-assess">—</div> <div class="stat-label">Lượt sàng lọc</div></div>
+      <div class="stat-box" id="box-cmt">    <div class="stat-val rose"    id="st-comments">—</div><div class="stat-label">Bình luận</div></div>
+    </div>
+
+    <!-- Pending alert -->
+    <div class="pending-alert" id="pending-alert">
+      ⚠️ <span id="pending-alert-text"></span>
     </div>
 
     <!-- Toolbar -->
     <div class="toolbar">
       <div class="toolbar-title">📋 Quản lý bài đăng</div>
-      <button class="filter-btn active" onclick="setFilter('all', this)">Tất cả</button>
-      <button class="filter-btn" onclick="setFilter('pending', this)">⏳ Chờ duyệt</button>
-      <button class="filter-btn" onclick="setFilter('approved', this)">✅ Đã duyệt</button>
-      <button class="btn-refresh" onclick="loadPosts()">↻ Làm mới</button>
+      <button class="filter-btn active" onclick="setFilter('all',this)">Tất cả</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">⏳ Chờ duyệt</button>
+      <button class="filter-btn" onclick="setFilter('approved',this)">✅ Đã duyệt</button>
+      <button class="btn-refresh" id="btn-refresh" onclick="manualRefresh()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Làm mới
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" placeholder="Tìm kiếm nội dung bài đăng…" oninput="filterSearch()">
     </div>
 
     <!-- Posts -->
     <div class="posts-grid" id="posts-grid">
-      <div class="loading"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>
+      <div class="loading-box"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang kết nối...</p></div>
     </div>
   </div>
 </div>
@@ -204,208 +194,309 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Config ────────────────────────────────────────────
+// ══════════════════════════════════════════════
+// CONFIG — paste URL Apps Script v3 vào đây
+// ══════════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2hfQiud1S61U3mMHh-8_d8uwMnjk7zkiEagR8tp0MrbcA-ra5ZcyxCycp5QwRfVo/exec';
+const POLL_INTERVAL = 15000; // tự động load lại mỗi 15 giây
 
 const CAT_LABELS = {
-  EMOTION: 'Chia sẻ cảm xúc', EXPERIENCE: 'Chia sẻ kinh nghiệm',
-  MOTIVATION: 'Truyền động lực', ADVICE: 'Cần lời khuyên', EXERCISE: 'Bài tập hay'
+  EMOTION:'Chia sẻ cảm xúc', EXPERIENCE:'Chia sẻ kinh nghiệm',
+  MOTIVATION:'Truyền động lực', ADVICE:'Cần lời khuyên', EXERCISE:'Bài tập hay'
 };
 
-let adminPassword = '';
-let currentFilter = 'all';
-let allPosts = [];
+// State
+let adminPwd   = '';
+let curFilter  = 'all';
+let cachedPosts = [];
+let prevPostIds = new Set();
+let pollTimer  = null;
+let isLoading  = false;
+
+// ── JSONP — bypass CORS ───────────────────────────────
+function callAPI(data, timeout = 12000) {
+  return new Promise((resolve, reject) => {
+    const cb   = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    const src  = SCRIPT_URL + '?callback=' + cb + '&data=' + encodeURIComponent(JSON.stringify(data));
+    const el   = document.createElement('script');
+    const tid  = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, timeout);
+
+    function cleanup() {
+      clearTimeout(tid);
+      delete window[cb];
+      el.parentNode && el.parentNode.removeChild(el);
+    }
+
+    window[cb] = r => { cleanup(); resolve(r); };
+    el.onerror = ()  => { cleanup(); reject(new Error('Script load failed')); };
+    el.src = src;
+    document.head.appendChild(el);
+  });
+}
 
 // ── Login ─────────────────────────────────────────────
-function doLogin() {
-  const pwd = document.getElementById('pwd-input').value;
+document.getElementById('pwd-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+async function doLogin() {
+  const pwd = document.getElementById('pwd-input').value.trim();
   if (!pwd) return;
-  adminPassword = pwd;
-  document.getElementById('login-error').textContent = '';
-  // Test bằng cách load stats
-  callAPI({ action: 'getStats', password: pwd })
-    .then(res => {
-      if (res.status === 'error') {
-        document.getElementById('login-error').textContent = '❌ ' + res.message;
-        adminPassword = '';
-      } else {
-        document.getElementById('login-wrap').style.display = 'none';
-        document.getElementById('admin-wrap').style.display = 'block';
-        updateStats(res.stats);
-        loadPosts();
-      }
-    })
-    .catch(() => {
-      document.getElementById('login-error').textContent = '❌ Không kết nối được server';
-    });
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+  btn.disabled = true; btn.textContent = 'Đang kết nối…'; err.textContent = '';
+
+  try {
+    const res = await callAPI({ action:'getStats', password:pwd });
+    if (res.status === 'error') {
+      err.textContent = '❌ ' + res.message; adminPwd = '';
+    } else {
+      adminPwd = pwd;
+      document.getElementById('login-wrap').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      updateStats(res.stats);
+      await loadAll(true);
+      startPolling();
+    }
+  } catch(e) {
+    err.textContent = '❌ Lỗi: ' + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Đăng nhập';
+  }
 }
 
 function doLogout() {
-  adminPassword = '';
+  stopPolling();
+  adminPwd = ''; cachedPosts = []; prevPostIds = new Set();
   document.getElementById('login-wrap').style.display = 'flex';
   document.getElementById('admin-wrap').style.display = 'none';
   document.getElementById('pwd-input').value = '';
 }
 
-// ── Stats ─────────────────────────────────────────────
-function updateStats(s) {
-  document.getElementById('st-total').textContent    = s.totalPosts    ?? '—';
-  document.getElementById('st-pending').textContent  = s.pending       ?? '—';
-  document.getElementById('st-approved').textContent = s.approved      ?? '—';
-  document.getElementById('st-assess').textContent   = s.totalAssess   ?? '—';
-  document.getElementById('st-comments').textContent = s.totalComments ?? '—';
+// ── Polling ───────────────────────────────────────────
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(() => loadAll(false), POLL_INTERVAL);
+}
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
 }
 
-// ── Load posts ────────────────────────────────────────
-async function loadPosts() {
-  document.getElementById('posts-grid').innerHTML =
-    '<div class="loading"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>';
+async function manualRefresh() {
+  const btn = document.getElementById('btn-refresh');
+  btn.classList.add('spinning');
+  await loadAll(true);
+  btn.classList.remove('spinning');
+}
+
+// ── Load all (posts + stats parallel) ────────────────
+async function loadAll(showLoader = false) {
+  if (isLoading) return;
+  isLoading = true;
+  if (showLoader) showLoading();
 
   try {
+    // Parallel: 2 requests cùng lúc
     const [postsRes, statsRes] = await Promise.all([
-      callAPI({ action: 'getPosts', password: adminPassword, filter: currentFilter }),
-      callAPI({ action: 'getStats', password: adminPassword })
+      callAPI({ action:'getPosts', password:adminPwd, filter:curFilter }),
+      callAPI({ action:'getStats', password:adminPwd })
     ]);
-    if (postsRes.status === 'error') { showToast('❌ ' + postsRes.message); return; }
-    allPosts = postsRes.posts || [];
-    updateStats(statsRes.stats || {});
-    renderPosts(allPosts);
-  } catch (err) {
-    document.getElementById('posts-grid').innerHTML =
-      '<div class="empty">❌ Không thể kết nối server.<br>Kiểm tra SCRIPT_URL trong admin.html</div>';
+
+    // Stats
+    if (statsRes.status === 'ok') updateStats(statsRes.stats);
+
+    // Posts
+    if (postsRes.status === 'ok') {
+      const newPosts = postsRes.posts || [];
+      detectNewPosts(newPosts);
+      cachedPosts = newPosts;
+      renderPosts(cachedPosts);
+      updateLastTime();
+    } else {
+      if (showLoader) showError(postsRes.message);
+    }
+  } catch(e) {
+    if (showLoader) showError(e.message);
+  } finally {
+    isLoading = false;
   }
 }
 
-function renderPosts(posts) {
-  if (posts.length === 0) {
+// ── Detect new posts → thông báo ─────────────────────
+function detectNewPosts(newPosts) {
+  if (prevPostIds.size === 0) {
+    newPosts.forEach(p => prevPostIds.add(p.id));
+    return;
+  }
+  const incoming = newPosts.filter(p => !prevPostIds.has(p.id));
+  if (incoming.length > 0) {
+    incoming.forEach(p => prevPostIds.add(p.id));
+    showToast(`🆕 ${incoming.length} bài mới vừa được đăng!`, 'success');
+    // Flash pending stat
+    document.getElementById('box-pending')?.classList.add('highlight');
+    setTimeout(() => document.getElementById('box-pending')?.classList.remove('highlight'), 600);
+  }
+  newPosts.forEach(p => prevPostIds.add(p.id));
+}
+
+// ── Stats ─────────────────────────────────────────────
+let prevStats = {};
+function updateStats(s) {
+  if (!s) return;
+  const fields = { total:'totalPosts', pending:'pending', approved:'approved', assess:'totalAssess', comments:'totalComments' };
+  Object.entries(fields).forEach(([id, key]) => {
+    const el = document.getElementById('st-' + id);
+    if (!el) return;
+    const val = s[key] ?? '—';
+    if (prevStats[key] !== undefined && prevStats[key] !== val) {
+      el.style.transform = 'scale(1.2)';
+      setTimeout(() => el.style.transform = '', 300);
+    }
+    el.textContent = val;
+    prevStats[key] = val;
+  });
+
+  // Pending alert
+  const p = s.pending || 0;
+  const alert = document.getElementById('pending-alert');
+  if (p > 0) {
+    document.getElementById('pending-alert-text').textContent = `Có ${p} bài đang chờ duyệt — hãy kiểm duyệt sớm!`;
+    alert.classList.add('show');
+  } else {
+    alert.classList.remove('show');
+  }
+}
+
+// ── Render posts ──────────────────────────────────────
+function renderPosts(posts, newIds = new Set()) {
+  const search = document.getElementById('search-input')?.value?.toLowerCase() || '';
+  const filtered = posts.filter(p => !search || p.content?.toLowerCase().includes(search));
+
+  if (!filtered.length) {
     document.getElementById('posts-grid').innerHTML =
-      '<div class="empty">📭 Không có bài đăng nào</div>';
+      `<div class="empty">📭 Không có bài đăng nào${search ? ' khớp với tìm kiếm' : ''}</div>`;
     return;
   }
 
-  document.getElementById('posts-grid').innerHTML = posts.map(p => {
-    const cat     = CAT_LABELS[p.category] || p.category;
-    const timeStr = formatTime(p.timestamp);
-    const isApp   = p.status === 'approved';
+  document.getElementById('posts-grid').innerHTML = filtered.map(p => {
+    const cat   = CAT_LABELS[p.category] || p.category || '—';
+    const isApp = p.status === 'approved';
+    const isNew = newIds.has(p.id);
+    const sid   = p.sessionId ? p.sessionId.slice(0,16) + '…' : 'ẩn danh';
     return `
-    <div class="post-card ${p.status}" id="card-${p.id}">
-      <div class="post-card-top">
+    <div class="post-card ${p.status || ''} ${isNew ? 'new-post' : ''}" id="card-${p.id}">
+      <div class="post-header">
         <div class="post-meta">
-          <div class="post-id">ID: ${p.id}</div>
-          <div class="post-info">
+          <div class="post-id">ID: ${esc(String(p.id))}${isNew ? '<span class="badge-new">MỚI</span>' : ''}</div>
+          <div class="post-badges">
             <span class="badge ${isApp ? 'badge-approved' : 'badge-pending'}">${isApp ? '✅ Đã duyệt' : '⏳ Chờ duyệt'}</span>
-            <span class="badge badge-cat">${cat}</span>
+            <span class="badge badge-cat">${esc(cat)}</span>
           </div>
-          <div style="margin-top:5px;display:flex;gap:12px">
-            <span class="post-time">🕐 ${timeStr}</span>
-            <span class="post-session">👤 ${p.sessionId ? p.sessionId.slice(0,18) + '…' : 'unknown'}</span>
-            <span class="post-time">❤️ ${p.likes || 0} lượt thích</span>
+          <div class="post-details">
+            <span>🕐 ${fmtTime(p.timestamp)}</span>
+            <span>👤 ${esc(sid)}</span>
+            <span>❤️ ${p.likes || 0}</span>
           </div>
         </div>
       </div>
-      <div class="post-content-text">${escHtml(p.content)}</div>
+      <div class="post-body">${esc(String(p.content || ''))}</div>
       <div class="post-actions">
         <button class="btn-approve" onclick="approvePost('${p.id}', this)" ${isApp ? 'disabled' : ''}>
           ✅ ${isApp ? 'Đã duyệt' : 'Duyệt bài'}
         </button>
-        <button class="btn-delete" onclick="deletePost('${p.id}', this)">
-          🗑️ Xoá bài
-        </button>
+        <button class="btn-delete" onclick="deletePost('${p.id}', this)">🗑️ Xoá</button>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── Filter ────────────────────────────────────────────
-function setFilter(filter, btn) {
-  currentFilter = filter;
+// ── Filter + Search ───────────────────────────────────
+function setFilter(f, btn) {
+  curFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  loadPosts();
+  document.getElementById('search-input').value = '';
+  loadAll(true);
 }
 
-// ── Actions ───────────────────────────────────────────
+function filterSearch() {
+  renderPosts(cachedPosts);
+}
+
+// ── Approve ───────────────────────────────────────────
 async function approvePost(postId, btn) {
-  btn.disabled = true;
-  btn.textContent = '⏳ Đang duyệt…';
+  btn.disabled = true; btn.textContent = '⏳…';
   try {
-    const res = await callAPI({ action: 'approvePost', password: adminPassword, postId });
+    const res = await callAPI({ action:'approvePost', password:adminPwd, postId });
     if (res.status === 'ok') {
-      showToast('✅ Đã duyệt bài viết');
-      loadPosts();
+      showToast('✅ Đã duyệt bài viết', 'success');
+      // Cập nhật local cache ngay (không cần reload)
+      const p = cachedPosts.find(x => x.id === postId);
+      if (p) { p.status = 'approved'; renderPosts(cachedPosts); }
+      // Refresh stats nhẹ
+      callAPI({ action:'getStats', password:adminPwd }).then(r => r.stats && updateStats(r.stats));
     } else {
-      showToast('❌ ' + res.message);
-      btn.disabled = false;
-      btn.textContent = '✅ Duyệt bài';
+      showToast('❌ ' + res.message, 'error');
+      btn.disabled = false; btn.textContent = '✅ Duyệt bài';
     }
-  } catch { btn.disabled = false; btn.textContent = '✅ Duyệt bài'; }
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = '✅ Duyệt bài';
+  }
 }
 
+// ── Delete ────────────────────────────────────────────
 async function deletePost(postId, btn) {
-  if (!confirm('Bạn có chắc muốn xoá bài này không?')) return;
-  btn.disabled = true;
-  btn.textContent = '⏳ Đang xoá…';
+  if (!confirm('Xoá bài này không thể khôi phục. Tiếp tục?')) return;
+  btn.disabled = true; btn.textContent = '⏳…';
   try {
-    const res = await callAPI({ action: 'deletePost', password: adminPassword, postId });
+    const res = await callAPI({ action:'deletePost', password:adminPwd, postId });
     if (res.status === 'ok') {
-      showToast('🗑️ Đã xoá bài viết');
+      showToast('🗑️ Đã xoá bài viết', 'success');
+      // Xoá khỏi cache + DOM ngay
+      cachedPosts = cachedPosts.filter(p => p.id !== postId);
+      prevPostIds.delete(postId);
       document.getElementById('card-' + postId)?.remove();
-      loadPosts();
+      if (!cachedPosts.length) renderPosts([]);
+      callAPI({ action:'getStats', password:adminPwd }).then(r => r.stats && updateStats(r.stats));
     } else {
-      showToast('❌ ' + res.message);
-      btn.disabled = false;
-      btn.textContent = '🗑️ Xoá bài';
+      showToast('❌ ' + res.message, 'error');
+      btn.disabled = false; btn.textContent = '🗑️ Xoá';
     }
-  } catch { btn.disabled = false; btn.textContent = '🗑️ Xoá bài'; }
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = '🗑️ Xoá';
+  }
 }
 
-// ── API call ──────────────────────────────────────────
-async function callAPI(data) {
-  return new Promise((resolve) => {
-    const callbackName = 'jsonp_' + Date.now();
-    
-    // Thêm callback vào data
-    const params = encodeURIComponent(JSON.stringify(data));
-    const script = document.createElement('script');
-    
-    window[callbackName] = function(response) {
-      resolve(response);
-      delete window[callbackName];
-      script.remove();
-    };
-    
-    script.src = SCRIPT_URL + '?callback=' + callbackName + '&data=' + params;
-    script.onerror = () => resolve({ status: 'error', message: 'Không kết nối được' });
-    document.head.appendChild(script);
-  });
+// ── UI helpers ────────────────────────────────────────
+function showLoading() {
+  document.getElementById('posts-grid').innerHTML =
+    '<div class="loading-box"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>';
 }
-
-// ── Helpers ───────────────────────────────────────────
-function formatTime(ts) {
-  if (!ts) return '—';
-  try {
-    const d = new Date(ts);
-    return d.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
-  } catch { return ts; }
+function showError(msg) {
+  document.getElementById('posts-grid').innerHTML =
+    `<div class="empty">❌ ${esc(msg)}<br>
+     <button onclick="manualRefresh()" style="margin-top:12px;padding:7px 18px;border-radius:99px;border:1px solid #E2E8F0;background:#fff;cursor:pointer;font-size:12px">↻ Thử lại</button>
+     </div>`;
 }
-
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function updateLastTime() {
+  document.getElementById('last-update').textContent =
+    'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
 }
-
-function showToast(msg) {
+function showToast(msg, type = '') {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.textContent = msg; t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => t.className = 'toast', 3000);
 }
-
-// Enter để login
-document.getElementById('pwd-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
+function fmtTime(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}); }
+  catch { return String(ts); }
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
