@@ -1193,13 +1193,35 @@ function submitPost() {
   showToast('Bài đăng đã được gửi và đang chờ kiểm duyệt 🌿');
 }
 
-function renderFeed() {
-  loadPosts();
+// ── Load bài từ Sheet (thay vì localStorage) ──────────
+async function renderFeed() {
   const feed = document.getElementById('post-feed');
-  if (posts.length === 0) {
-    feed.innerHTML = '<div class="empty-state">Chưa có bài đăng nào.<br>Hãy là người đầu tiên chia sẻ 🌱</div>';
-    return;
+  feed.innerHTML = '<div class="empty" style="padding:40px;text-align:center;color:#94A3B8">⏳ Đang tải bài đăng...</div>';
+
+  try {
+    const res = await new Promise((resolve, reject) => {
+      const cb  = 'feed_' + Date.now();
+      const el  = document.createElement('script');
+      const tid = setTimeout(() => { reject(new Error('Timeout')); }, 10000);
+      window[cb] = r => { clearTimeout(tid); delete window[cb]; el.remove(); resolve(r); };
+      el.onerror = () => { clearTimeout(tid); reject(new Error('Lỗi kết nối')); };
+      el.src = SHEET_CONFIG.SCRIPT_URL + '?callback=' + cb
+             + '&data=' + encodeURIComponent(JSON.stringify({ type: 'getApprovedPosts' }));
+      document.head.appendChild(el);
+    });
+
+    if (res.status === 'ok' && res.posts?.length) {
+      posts = res.posts; // cập nhật cache local
+      renderPostCards(res.posts);
+    } else {
+      feed.innerHTML = '<div class="empty">Chưa có bài đăng nào được duyệt 🌱</div>';
+    }
+  } catch(e) {
+    // Fallback về localStorage nếu mất mạng
+    loadPosts();
+    renderPostCards(posts);
   }
+}
   feed.innerHTML = posts.map(p => {
     const meta = CAT_META[p.category] || CAT_META.EMOTION;
     const nameIdx = parseInt(p.id.slice(-1), 16) % ANON_NAMES.length;
