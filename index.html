@@ -751,11 +751,11 @@ const SESSION_ID = getSessionId();
 //  Thay SCRIPT_URL bằng URL của Apps Script đã deploy
 // ══════════════════════════════════════════════════════
 const SHEET_CONFIG = {
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwE0blw_JbakDRVF7FGtsI9BFpC_AAo9t1yPmHCMhghCHSC_DMRAw2yBfeUjL4t7z0/exec'
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwdqNkd-_6u2Gl77qT2pe2KWReEfTBcL5L-ezB_A0qrwAAaDwJiaIX4KYoXOGEjDYw/exec'
 };
 
 async function saveToSheet(type, data) {
-  if (SHEET_CONFIG.SCRIPT_URL.includes('YOUR_SCRIPT_ID')) return; // chưa cấu hình
+  if (SHEET_CONFIG.SCRIPT_URL.includes('AKfycbwdqNkd-_6u2Gl77qT2pe2KWReEfTBcL5L-ezB_A0qrwAAaDwJiaIX4KYoXOGEjDYw')) return; // chưa cấu hình
   try {
     await fetch(SHEET_CONFIG.SCRIPT_URL, {
       method: 'POST',

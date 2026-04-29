@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniHeal Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #2ABFAA; --teal-light: #E6F8F5; --teal-dark: #1A9E8C;
+    --rose: #F56B6B; --amber: #F5A623; --amber-light: #FEF3DC;
+    --emerald: #2ECC8F; --violet: #9B6BF5;
+    --slate-800: #1E293B; --slate-700: #334155; --slate-600: #475569;
+    --slate-500: #64748B; --slate-400: #94A3B8; --slate-200: #E2E8F0;
+    --slate-100: #F1F5F9; --slate-50: #F8FAFC; --white: #FFFFFF;
+    --font-d: 'Quicksand', sans-serif; --font-b: 'DM Sans', sans-serif;
+    --radius: 14px; --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  body { font-family: var(--font-b); background: var(--slate-50); color: var(--slate-700); min-height: 100vh; }
+
+  /* ── Login ── */
+  .login-wrap {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #EEF9F7, #EBF5FF);
+  }
+  .login-card {
+    background: white; border-radius: 20px; padding: 40px; width: 360px;
+    box-shadow: 0 8px 40px rgba(42,191,170,0.15); text-align: center;
+  }
+  .login-logo { font-size: 40px; margin-bottom: 12px; }
+  .login-title { font-family: var(--font-d); font-size: 22px; font-weight: 700; color: var(--slate-800); margin-bottom: 4px; }
+  .login-sub { font-size: 13px; color: var(--slate-500); margin-bottom: 28px; }
+  .login-input {
+    width: 100%; padding: 12px 16px; border: 1.5px solid var(--slate-200);
+    border-radius: 10px; font-size: 14px; font-family: var(--font-b);
+    outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+    text-align: center; letter-spacing: 3px;
+  }
+  .login-input:focus { border-color: var(--teal); }
+  .login-btn {
+    width: 100%; padding: 13px; background: var(--teal); color: white;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
+    font-family: var(--font-d); cursor: pointer; transition: background 0.2s;
+  }
+  .login-btn:hover { background: var(--teal-dark); }
+  .login-error { color: var(--rose); font-size: 12px; margin-top: 10px; }
+
+  /* ── Layout ── */
+  .admin-wrap { display: none; }
+  .topbar {
+    background: var(--slate-800); color: white; padding: 0 28px;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-d); font-weight: 700; font-size: 16px; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-user { font-size: 12px; color: #94A3B8; }
+  .btn-logout { background: none; border: 1px solid #475569; color: #94A3B8; border-radius: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: var(--font-b); }
+  .btn-logout:hover { border-color: var(--rose); color: var(--rose); }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+  /* ── Stats ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .stat-box { background: white; border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow); }
+  .stat-box-val { font-family: var(--font-d); font-size: 32px; font-weight: 700; }
+  .stat-box-val.teal   { color: var(--teal); }
+  .stat-box-val.amber  { color: var(--amber); }
+  .stat-box-val.rose   { color: var(--rose); }
+  .stat-box-val.violet { color: var(--violet); }
+  .stat-box-val.emerald{ color: var(--emerald); }
+  .stat-box-label { font-size: 12px; color: var(--slate-500); margin-top: 6px; }
+
+  /* ── Toolbar ── */
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .toolbar-title { font-family: var(--font-d); font-size: 18px; font-weight: 700; color: var(--slate-800); flex: 1; }
+  .filter-btn {
+    padding: 7px 16px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    border: 1.5px solid var(--slate-200); background: white; color: var(--slate-600);
+    cursor: pointer; font-family: var(--font-b); transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .filter-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .btn-refresh {
+    padding: 7px 16px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    background: var(--slate-100); border: none; color: var(--slate-600);
+    cursor: pointer; font-family: var(--font-b); transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+  }
+  .btn-refresh:hover { background: var(--slate-200); }
+
+  /* ── Post Cards ── */
+  .posts-grid { display: flex; flex-direction: column; gap: 12px; }
+  .post-card {
+    background: white; border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--shadow); border-left: 4px solid var(--slate-200);
+    transition: border-color 0.2s;
+  }
+  .post-card.pending  { border-left-color: var(--amber); }
+  .post-card.approved { border-left-color: var(--emerald); }
+  .post-card.deleted  { border-left-color: var(--rose); opacity: 0.6; }
+
+  .post-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .post-meta { flex: 1; }
+  .post-id   { font-size: 10px; color: var(--slate-400); font-family: monospace; margin-bottom: 4px; }
+  .post-info { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { border-radius: 99px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
+  .badge-pending  { background: var(--amber-light);  color: #B87A0A; }
+  .badge-approved { background: #D1FAE5; color: #065F46; }
+  .badge-cat      { background: var(--teal-light);   color: var(--teal-dark); }
+  .post-time { font-size: 11px; color: var(--slate-400); }
+  .post-session { font-size: 11px; color: var(--slate-400); font-family: monospace; }
+
+  .post-content-text {
+    font-size: 14px; line-height: 1.7; color: var(--slate-700);
+    background: var(--slate-50); border-radius: 10px; padding: 14px;
+    margin-bottom: 14px;
+  }
+
+  .post-actions { display: flex; gap: 8px; }
+  .btn-approve {
+    display: flex; align-items: center; gap: 5px;
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: #D1FAE5; color: #065F46; border: none; cursor: pointer;
+    font-family: var(--font-b); transition: all 0.2s;
+  }
+  .btn-approve:hover { background: #A7F3D0; }
+  .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-delete {
+    display: flex; align-items: center; gap: 5px;
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: #FFE4E6; color: #9F1239; border: none; cursor: pointer;
+    font-family: var(--font-b); transition: all 0.2s;
+  }
+  .btn-delete:hover { background: #FECDD3; }
+
+  /* ── Empty / Loading ── */
+  .empty { text-align: center; padding: 60px 24px; color: var(--slate-400); font-size: 14px; }
+  .loading { text-align: center; padding: 60px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--teal-light); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--slate-800); color: white; border-radius: 99px;
+    padding: 12px 24px; font-size: 13px; z-index: 999;
+    opacity: 0; transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ────────────────────────────────────── -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <div class="login-title">UniHeal Admin</div>
+    <div class="login-sub">Nhập mật khẩu để tiếp tục</div>
+    <input class="login-input" type="password" id="pwd-input" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Đăng nhập</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ── ADMIN ─────────────────────────────────────── -->
+<div class="admin-wrap" id="admin-wrap">
+  <div class="topbar">
+    <div class="topbar-brand">💚 UniHeal Admin</div>
+    <div class="topbar-right">
+      <span class="topbar-user">🟢 Đang hoạt động</span>
+      <button class="btn-logout" onclick="doLogout()">Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-box"><div class="stat-box-val teal" id="st-total">—</div><div class="stat-box-label">Tổng bài đăng</div></div>
+      <div class="stat-box"><div class="stat-box-val amber" id="st-pending">—</div><div class="stat-box-label">Chờ duyệt</div></div>
+      <div class="stat-box"><div class="stat-box-val emerald" id="st-approved">—</div><div class="stat-box-label">Đã duyệt</div></div>
+      <div class="stat-box"><div class="stat-box-val violet" id="st-assess">—</div><div class="stat-box-label">Lượt sàng lọc</div></div>
+      <div class="stat-box"><div class="stat-box-val rose" id="st-comments">—</div><div class="stat-box-label">Bình luận</div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-title">📋 Quản lý bài đăng</div>
+      <button class="filter-btn active" onclick="setFilter('all', this)">Tất cả</button>
+      <button class="filter-btn" onclick="setFilter('pending', this)">⏳ Chờ duyệt</button>
+      <button class="filter-btn" onclick="setFilter('approved', this)">✅ Đã duyệt</button>
+      <button class="btn-refresh" onclick="loadPosts()">↻ Làm mới</button>
+    </div>
+
+    <!-- Posts -->
+    <div class="posts-grid" id="posts-grid">
+      <div class="loading"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdqNkd-_6u2Gl77qT2pe2KWReEfTBcL5L-ezB_A0qrwAAaDwJiaIX4KYoXOGEjDYw/exec';
+
+const CAT_LABELS = {
+  EMOTION: 'Chia sẻ cảm xúc', EXPERIENCE: 'Chia sẻ kinh nghiệm',
+  MOTIVATION: 'Truyền động lực', ADVICE: 'Cần lời khuyên', EXERCISE: 'Bài tập hay'
+};
+
+let adminPassword = '';
+let currentFilter = 'all';
+let allPosts = [];
+
+// ── Login ─────────────────────────────────────────────
+function doLogin() {
+  const pwd = document.getElementById('pwd-input').value;
+  if (!pwd) return;
+  adminPassword = pwd;
+  document.getElementById('login-error').textContent = '';
+  // Test bằng cách load stats
+  callAPI({ action: 'getStats', password: pwd })
+    .then(res => {
+      if (res.status === 'error') {
+        document.getElementById('login-error').textContent = '❌ ' + res.message;
+        adminPassword = '';
+      } else {
+        document.getElementById('login-wrap').style.display = 'none';
+        document.getElementById('admin-wrap').style.display = 'block';
+        updateStats(res.stats);
+        loadPosts();
+      }
+    })
+    .catch(() => {
+      document.getElementById('login-error').textContent = '❌ Không kết nối được server';
+    });
+}
+
+function doLogout() {
+  adminPassword = '';
+  document.getElementById('login-wrap').style.display = 'flex';
+  document.getElementById('admin-wrap').style.display = 'none';
+  document.getElementById('pwd-input').value = '';
+}
+
+// ── Stats ─────────────────────────────────────────────
+function updateStats(s) {
+  document.getElementById('st-total').textContent    = s.totalPosts    ?? '—';
+  document.getElementById('st-pending').textContent  = s.pending       ?? '—';
+  document.getElementById('st-approved').textContent = s.approved      ?? '—';
+  document.getElementById('st-assess').textContent   = s.totalAssess   ?? '—';
+  document.getElementById('st-comments').textContent = s.totalComments ?? '—';
+}
+
+// ── Load posts ────────────────────────────────────────
+async function loadPosts() {
+  document.getElementById('posts-grid').innerHTML =
+    '<div class="loading"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>';
+
+  try {
+    const [postsRes, statsRes] = await Promise.all([
+      callAPI({ action: 'getPosts', password: adminPassword, filter: currentFilter }),
+      callAPI({ action: 'getStats', password: adminPassword })
+    ]);
+    if (postsRes.status === 'error') { showToast('❌ ' + postsRes.message); return; }
+    allPosts = postsRes.posts || [];
+    updateStats(statsRes.stats || {});
+    renderPosts(allPosts);
+  } catch (err) {
+    document.getElementById('posts-grid').innerHTML =
+      '<div class="empty">❌ Không thể kết nối server.<br>Kiểm tra SCRIPT_URL trong admin.html</div>';
+  }
+}
+
+function renderPosts(posts) {
+  if (posts.length === 0) {
+    document.getElementById('posts-grid').innerHTML =
+      '<div class="empty">📭 Không có bài đăng nào</div>';
+    return;
+  }
+
+  document.getElementById('posts-grid').innerHTML = posts.map(p => {
+    const cat     = CAT_LABELS[p.category] || p.category;
+    const timeStr = formatTime(p.timestamp);
+    const isApp   = p.status === 'approved';
+    return `
+    <div class="post-card ${p.status}" id="card-${p.id}">
+      <div class="post-card-top">
+        <div class="post-meta">
+          <div class="post-id">ID: ${p.id}</div>
+          <div class="post-info">
+            <span class="badge ${isApp ? 'badge-approved' : 'badge-pending'}">${isApp ? '✅ Đã duyệt' : '⏳ Chờ duyệt'}</span>
+            <span class="badge badge-cat">${cat}</span>
+          </div>
+          <div style="margin-top:5px;display:flex;gap:12px">
+            <span class="post-time">🕐 ${timeStr}</span>
+            <span class="post-session">👤 ${p.sessionId ? p.sessionId.slice(0,18) + '…' : 'unknown'}</span>
+            <span class="post-time">❤️ ${p.likes || 0} lượt thích</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content-text">${escHtml(p.content)}</div>
+      <div class="post-actions">
+        <button class="btn-approve" onclick="approvePost('${p.id}', this)" ${isApp ? 'disabled' : ''}>
+          ✅ ${isApp ? 'Đã duyệt' : 'Duyệt bài'}
+        </button>
+        <button class="btn-delete" onclick="deletePost('${p.id}', this)">
+          🗑️ Xoá bài
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Filter ────────────────────────────────────────────
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadPosts();
+}
+
+// ── Actions ───────────────────────────────────────────
+async function approvePost(postId, btn) {
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang duyệt…';
+  try {
+    const res = await callAPI({ action: 'approvePost', password: adminPassword, postId });
+    if (res.status === 'ok') {
+      showToast('✅ Đã duyệt bài viết');
+      loadPosts();
+    } else {
+      showToast('❌ ' + res.message);
+      btn.disabled = false;
+      btn.textContent = '✅ Duyệt bài';
+    }
+  } catch { btn.disabled = false; btn.textContent = '✅ Duyệt bài'; }
+}
+
+async function deletePost(postId, btn) {
+  if (!confirm('Bạn có chắc muốn xoá bài này không?')) return;
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang xoá…';
+  try {
+    const res = await callAPI({ action: 'deletePost', password: adminPassword, postId });
+    if (res.status === 'ok') {
+      showToast('🗑️ Đã xoá bài viết');
+      document.getElementById('card-' + postId)?.remove();
+      loadPosts();
+    } else {
+      showToast('❌ ' + res.message);
+      btn.disabled = false;
+      btn.textContent = '🗑️ Xoá bài';
+    }
+  } catch { btn.disabled = false; btn.textContent = '🗑️ Xoá bài'; }
+}
+
+// ── API call ──────────────────────────────────────────
+async function callAPI(data) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+// ── Helpers ───────────────────────────────────────────
+function formatTime(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+  } catch { return ts; }
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Enter để login
+document.getElementById('pwd-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
