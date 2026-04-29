@@ -755,7 +755,6 @@ const SHEET_CONFIG = {
 };
 
 async function saveToSheet(type, data) {
-  if (SHEET_CONFIG.SCRIPT_URL.includes('AKfycbx2hfQiud1S61U3mMHh-8_d8uwMnjk7zkiEagR8tp0MrbcA-ra5ZcyxCycp5QwRfVo')) return; // chưa cấu hình
   try {
     await fetch(SHEET_CONFIG.SCRIPT_URL, {
       method: 'POST',
@@ -763,7 +762,9 @@ async function saveToSheet(type, data) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, sessionId: SESSION_ID, timestamp: new Date().toISOString(), ...data })
     });
-  } catch(e) { console.log('Sheet save skipped:', e.message); }
+  } catch(e) { 
+    console.log('Sheet save skipped:', e.message); 
+  }
 }
 
 // ══════════════════════════════════════════════════════
