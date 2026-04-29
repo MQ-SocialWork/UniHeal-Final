@@ -361,12 +361,23 @@ async function deletePost(postId, btn) {
 
 // ── API call ──────────────────────────────────────────
 async function callAPI(data) {
-  const res = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+  return new Promise((resolve) => {
+    const callbackName = 'jsonp_' + Date.now();
+    
+    // Thêm callback vào data
+    const params = encodeURIComponent(JSON.stringify(data));
+    const script = document.createElement('script');
+    
+    window[callbackName] = function(response) {
+      resolve(response);
+      delete window[callbackName];
+      script.remove();
+    };
+    
+    script.src = SCRIPT_URL + '?callback=' + callbackName + '&data=' + params;
+    script.onerror = () => resolve({ status: 'error', message: 'Không kết nối được' });
+    document.head.appendChild(script);
   });
-  return res.json();
 }
 
 // ── Helpers ───────────────────────────────────────────
