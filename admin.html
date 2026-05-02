@@ -35,7 +35,8 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
 /* Layout */
 .admin-wrap{display:none}
 .topbar{background:var(--slate-800);color:#fff;padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px}
-.topbar-brand{font-family:var(--font-d);font-weight:700;font-size:15px;white-space:nowrap}
+.topbar-brand{font-family:var(--font-d);font-weight:700;font-size:15px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.topbar-logo{width:36px;height:36px;object-fit:contain;border-radius:10px;background:#fff;padding:4px}
 .topbar-mid{display:flex;align-items:center;gap:8px;flex:1;justify-content:center}
 .topbar-right{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .poll-indicator{display:flex;align-items:center;gap:5px;font-size:11px;color:#94A3B8}
@@ -54,6 +55,7 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
 .stat-val.teal{color:var(--teal)}.stat-val.amber{color:var(--amber)}
 .stat-val.emerald{color:var(--emerald)}.stat-val.violet{color:var(--violet)}.stat-val.rose{color:var(--rose)}
 .stat-label{font-size:11px;color:var(--slate-500);margin-top:5px}
+.stat-daily{font-size:12px;color:var(--emerald);margin-top:4px;font-weight:600}
 .stat-box.highlight{animation:flashStat .5s ease}
 @keyframes flashStat{0%{box-shadow:0 0 0 3px rgba(42,191,170,0.4)}100%{box-shadow:var(--shadow)}}
 
@@ -100,6 +102,15 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
 .btn-delete{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;background:#FFE4E6;color:#9F1239;border:none;cursor:pointer;font-family:var(--font-b);transition:all .2s}
 .btn-delete:hover:not(:disabled){background:#FECDD3}
 .btn-delete:disabled{opacity:.5;cursor:not-allowed}
+.btn-remove-post{display:inline-flex;align-items:center;gap:4px;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;background:var(--rose);color:#fff;border:none;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.btn-remove-post:hover:not(:disabled){background:#e35252}
+.btn-remove-post:disabled{opacity:.5;cursor:not-allowed}
+.comment-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.comment-item{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:8px;padding:8px 10px}
+.comment-text{font-size:12px;color:var(--slate-700);line-height:1.6;word-break:break-word;flex:1}
+.btn-comment-delete{padding:4px 8px;border-radius:7px;border:1px solid #fecdd3;background:#fff1f2;color:#9F1239;font-size:11px;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.btn-comment-delete:hover{background:#ffe4e6}
+.fade-out{opacity:0;transform:translateY(-4px);transition:opacity .25s ease,transform .25s ease}
 
 /* New badge */
 .badge-new{background:#FEF3DC;color:#B87A0A;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;margin-left:4px;animation:blink 1s ease 3}
@@ -138,7 +149,7 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
 <!-- ADMIN -->
 <div class="admin-wrap" id="admin-wrap">
   <div class="topbar">
-    <div class="topbar-brand">💚 UniHeal Admin</div>
+    <div class="topbar-brand"><img class="topbar-logo" src="https://www.dropbox.com/scl/fi/mxn1co9o07pi7n12mnq8j/UniHeal-Logo.png?rlkey=szfg69ixhh11iucuu16e542xk&st=9a0i1h6p&dl=1" alt="UniHeal">UniHeal Admin</div>
     <div class="topbar-mid">
       <div class="poll-indicator">
         <div class="poll-dot"></div>
@@ -154,11 +165,11 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
   <div class="main">
     <!-- Stats -->
     <div class="stats-row">
-      <div class="stat-box" id="box-total">  <div class="stat-val teal"    id="st-total">—</div>  <div class="stat-label">Tổng bài đăng</div></div>
-      <div class="stat-box" id="box-pending"><div class="stat-val amber"   id="st-pending">—</div><div class="stat-label">Chờ duyệt</div></div>
-      <div class="stat-box" id="box-app">    <div class="stat-val emerald" id="st-approved">—</div><div class="stat-label">Đã duyệt</div></div>
-      <div class="stat-box" id="box-assess"> <div class="stat-val violet"  id="st-assess">—</div> <div class="stat-label">Lượt sàng lọc</div></div>
-      <div class="stat-box" id="box-cmt">    <div class="stat-val rose"    id="st-comments">—</div><div class="stat-label">Bình luận</div></div>
+      <div class="stat-box" id="box-total">  <div class="stat-val teal"    id="st-total">—</div>  <div class="stat-label">Tổng bài đăng</div><div class="stat-daily" id="daily-total">+0 hôm nay</div></div>
+      <div class="stat-box" id="box-pending"><div class="stat-val amber"   id="st-pending">—</div><div class="stat-label">Chờ duyệt</div><div class="stat-daily" id="daily-pending">+0 hôm nay</div></div>
+      <div class="stat-box" id="box-app">    <div class="stat-val emerald" id="st-approved">—</div><div class="stat-label">Đã duyệt</div><div class="stat-daily" id="daily-approved">+0 hôm nay</div></div>
+      <div class="stat-box" id="box-assess"> <div class="stat-val violet"  id="st-assess">—</div> <div class="stat-label">Lượt sàng lọc</div><div class="stat-daily" id="daily-assess">+0 hôm nay</div></div>
+      <div class="stat-box" id="box-cmt">    <div class="stat-val rose"    id="st-comments">—</div><div class="stat-label">Bình luận</div><div class="stat-daily" id="daily-comments">+0 hôm nay</div></div>
     </div>
 
     <!-- Pending alert -->
@@ -172,6 +183,8 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
       <button class="filter-btn active" onclick="setFilter('all',this)">Tất cả</button>
       <button class="filter-btn" onclick="setFilter('pending',this)">⏳ Chờ duyệt</button>
       <button class="filter-btn" onclick="setFilter('approved',this)">✅ Đã duyệt</button>
+      <button class="filter-btn" onclick="setFilter('removed-posts',this)">🗑️ Bài đã gỡ</button>
+      <button class="filter-btn" onclick="setFilter('removed-comments',this)">💬 Bình luận đã gỡ</button>
       <button class="btn-refresh" id="btn-refresh" onclick="manualRefresh()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         Làm mới
@@ -296,9 +309,11 @@ async function loadAll(showLoader = false) {
   if (showLoader) showLoading();
 
   try {
+    const onlyRemovedView = curFilter === 'removed-posts' || curFilter === 'removed-comments';
+    const apiFilter = onlyRemovedView ? 'all' : curFilter;
     // Parallel: 2 requests cùng lúc
     const [postsRes, statsRes] = await Promise.all([
-      callAPI({ action:'getPosts', password:adminPwd, filter:curFilter }),
+      callAPI({ action:'getPosts', password:adminPwd, filter:apiFilter }),
       callAPI({ action:'getStats', password:adminPwd })
     ]);
 
@@ -310,7 +325,8 @@ async function loadAll(showLoader = false) {
       const newPosts = postsRes.posts || [];
       detectNewPosts(newPosts);
       cachedPosts = newPosts;
-      renderPosts(cachedPosts);
+      if (onlyRemovedView) renderRemovedEmptyState(curFilter);
+      else renderPosts(cachedPosts);
       updateLastTime();
     } else {
       if (showLoader) showError(postsRes.message);
@@ -355,6 +371,17 @@ function updateStats(s) {
     el.textContent = val;
     prevStats[key] = val;
   });
+  const dailyMap = {
+    total: s.totalToday ?? s.todayPosts ?? 0,
+    pending: s.pendingToday ?? s.todayPending ?? 0,
+    approved: s.approvedToday ?? s.todayApproved ?? 0,
+    assess: s.assessToday ?? s.todayAssess ?? 0,
+    comments: s.commentsToday ?? s.todayComments ?? 0
+  };
+  Object.entries(dailyMap).forEach(([k,v]) => {
+    const el = document.getElementById('daily-' + k);
+    if (el) el.textContent = `+${Number(v) || 0} hôm nay`;
+  });
 
   // Pending alert
   const p = s.pending || 0;
@@ -383,6 +410,7 @@ function renderPosts(posts, newIds = new Set()) {
     const isApp = p.status === 'approved';
     const isNew = newIds.has(p.id);
     const sid   = p.sessionId ? p.sessionId.slice(0,16) + '…' : 'ẩn danh';
+    const comments = Array.isArray(p.comments) ? p.comments : [];
     return `
     <div class="post-card ${p.status || ''} ${isNew ? 'new-post' : ''}" id="card-${p.id}">
       <div class="post-header">
@@ -400,11 +428,20 @@ function renderPosts(posts, newIds = new Set()) {
         </div>
       </div>
       <div class="post-body">${esc(String(p.content || ''))}</div>
+      ${comments.length ? `<div class="comment-list">
+        ${comments.map((c,idx) => `
+          <div class="comment-item" id="comment-${p.id}-${idx}">
+            <div class="comment-text">💬 ${esc(String(c.text || c.content || ''))}</div>
+            <button class="btn-comment-delete" onclick="deleteComment('${p.id}','${idx}',this)">🗑️ Xóa</button>
+          </div>
+        `).join('')}
+      </div>` : ''}
       <div class="post-actions">
         <button class="btn-approve" onclick="approvePost('${p.id}', this)" ${isApp ? 'disabled' : ''}>
           ✅ ${isApp ? 'Đã duyệt' : 'Duyệt bài'}
         </button>
         <button class="btn-delete" onclick="deletePost('${p.id}', this)">🗑️ Xoá</button>
+        <button class="btn-remove-post" onclick="deletePost('${p.id}', this)">🗑️ Gỡ bài</button>
       </div>
     </div>`;
   }).join('');
@@ -416,6 +453,11 @@ function setFilter(f, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('search-input').value = '';
+  if (f === 'removed-posts' || f === 'removed-comments') {
+    renderRemovedEmptyState(f);
+    callAPI({ action:'getStats', password:adminPwd }).then(r => r.stats && updateStats(r.stats));
+    return;
+  }
   loadAll(true);
 }
 
@@ -445,10 +487,8 @@ async function approvePost(postId, btn) {
   }
 }
 
-// ── Delete ────────────────────────────────────────────
-async function deletePost(postId, btn) {
-  if (!confirm('Xoá bài này không thể khôi phục. Tiếp tục?')) return;
-  btn.disabled = true; btn.textContent = '⏳…';
+// ── Delete (server) ───────────────────────────────────
+async function deletePostServer(postId, btn) {
   try {
     const res = await callAPI({ action:'deletePost', password:adminPwd, postId });
     if (res.status === 'ok') {
@@ -461,15 +501,24 @@ async function deletePost(postId, btn) {
       callAPI({ action:'getStats', password:adminPwd }).then(r => r.stats && updateStats(r.stats));
     } else {
       showToast('❌ ' + res.message, 'error');
-      btn.disabled = false; btn.textContent = '🗑️ Xoá';
+      if (btn) { btn.disabled = false; btn.textContent = '🗑️ Xoá'; }
     }
   } catch(e) {
     showToast('❌ ' + e.message, 'error');
-    btn.disabled = false; btn.textContent = '🗑️ Xoá';
+    if (btn) { btn.disabled = false; btn.textContent = '🗑️ Xoá'; }
   }
 }
 
 // ── UI helpers ────────────────────────────────────────
+function renderRemovedEmptyState(filterType) {
+  const title = filterType === 'removed-comments' ? '💬 Bình luận đã gỡ' : '🗑️ Bài đã gỡ';
+  document.getElementById('posts-grid').innerHTML = `
+    <div class="empty">
+      <div style="font-size:28px;margin-bottom:8px">${title}</div>
+      <div style="color:var(--slate-500)">Chưa có dữ liệu</div>
+      <div style="font-size:12px;color:var(--slate-400);margin-top:8px">Dữ liệu sẽ hiển thị khi kết nối API trạng thái gỡ hoàn tất.</div>
+    </div>`;
+}
 function showLoading() {
   document.getElementById('posts-grid').innerHTML =
     '<div class="loading-box"><div class="spinner"></div><p style="color:#94A3B8;font-size:13px">Đang tải...</p></div>';
@@ -496,6 +545,30 @@ function fmtTime(ts) {
 }
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fadeOutAndRemove(el) {
+  if (!el) return;
+  el.classList.add('fade-out');
+  setTimeout(() => el.remove(), 260);
+}
+
+function deletePost(postId, btn) {
+  if (!confirm('Bạn có chắc chắn muốn gỡ nội dung này không?')) return;
+  if (btn) btn.disabled = true;
+  const card = document.getElementById('card-' + postId);
+  fadeOutAndRemove(card);
+  cachedPosts = cachedPosts.filter(p => p.id !== postId);
+  prevPostIds.delete(postId);
+  // TODO: Call Google Apps Script API to update status in Sheets
+  deletePostServer(postId, btn);
+}
+
+function deleteComment(postId, commentId, btn) {
+  if (!confirm('Bạn có chắc chắn muốn gỡ nội dung này không?')) return;
+  const row = btn?.closest('.comment-item') || document.getElementById(`comment-${postId}-${commentId}`);
+  fadeOutAndRemove(row);
+  // TODO: Call Google Apps Script API to update status in Sheets
 }
 </script>
 </body>
