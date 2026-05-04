@@ -210,7 +210,7 @@ body{font-family:var(--font-b);background:var(--slate-50);color:var(--slate-700)
 // ══════════════════════════════════════════════
 // CONFIG — paste URL Apps Script v3 vào đây
 // ══════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxCwKlILxHCOOdwgC9nT1C7cYjDoMfHViwvQU8UNzkMBmnL9gikfvHocrab_qfDIw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2pp0ySzTlroHKpC6wlGqiKaqrh6Z7wY28rwfYp-VGGG5TBQnkj2BchgEywJopSHg/exec';
 const POLL_INTERVAL = 15000; // tự động load lại mỗi 15 giây
 
 const CAT_LABELS = {
@@ -448,21 +448,82 @@ function renderPosts(posts, newIds = new Set()) {
 }
 
 // ── Filter + Search ───────────────────────────────────
+// ── Filter + Search ───────────────────────────────────
 function setFilter(f, btn) {
   curFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('search-input').value = '';
-  if (f === 'removed-posts' || f === 'removed-comments') {
-    renderRemovedEmptyState(f);
-    callAPI({ action:'getStats', password:adminPwd }).then(r => r.stats && updateStats(r.stats));
-    return;
-  }
+  
+  // Gọi API load lại dữ liệu cho mọi tab một cách thống nhất
   loadAll(true);
 }
 
-function filterSearch() {
-  renderPosts(cachedPosts);
+// ── Render posts ──────────────────────────────────────
+function renderPosts(posts, newIds = new Set()) {
+  const search = document.getElementById('search-input')?.value?.toLowerCase() || '';
+  const filtered = posts.filter(p => !search || p.content?.toLowerCase().includes(search));
+
+  if (!filtered.length) {
+    document.getElementById('posts-grid').innerHTML =
+      `<div class="empty">📭 Không có bài đăng nào${search ? ' khớp với tìm kiếm' : ''}</div>`;
+    return;
+  }
+
+  document.getElementById('posts-grid').innerHTML = filtered.map(p => {
+    const cat   = CAT_LABELS[p.category] || p.category || '—';
+    const isApp = p.status === 'approved';
+    const isRemoved = p.status === 'removed-posts'; // Nhận diện bài đã gỡ
+    const isNew = newIds.has(p.id);
+    const sid   = p.sessionId ? p.sessionId.slice(0,16) + '…' : 'ẩn danh';
+    const comments = Array.isArray(p.comments) ? p.comments : [];
+
+    // Xử lý giao diện nhãn (Badge)
+    let badgeHTML = '';
+    if (isApp) {
+      badgeHTML = `<span class="badge badge-approved">✅ Đã duyệt</span>`;
+    } else if (isRemoved) {
+      badgeHTML = `<span class="badge" style="background:#FFE4E6;color:#9F1239">🗑️ Đã gỡ</span>`;
+    } else {
+      badgeHTML = `<span class="badge badge-pending">⏳ Chờ duyệt</span>`;
+    }
+
+    return `
+    <div class="post-card ${p.status || ''} ${isNew ? 'new-post' : ''}" id="card-${p.id}">
+      <div class="post-header">
+        <div class="post-meta">
+          <div class="post-id">ID: ${esc(String(p.id))}${isNew ? '<span class="badge-new">MỚI</span>' : ''}</div>
+          <div class="post-badges">
+            ${badgeHTML}
+            <span class="badge badge-cat">${esc(cat)}</span>
+          </div>
+          <div class="post-details">
+            <span>🕐 ${fmtTime(p.timestamp)}</span>
+            <span>👤 ${esc(sid)}</span>
+            <span>❤️ ${p.likes || 0}</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-body">${esc(String(p.content || ''))}</div>
+      
+      ${comments.length ? `<div class="comment-list">
+        ${comments.map((c,idx) => `
+          <div class="comment-item" id="comment-${p.id}-${idx}">
+            <div class="comment-text">💬 ${esc(String(c.text || c.content || ''))}</div>
+            ${c.status === 'removed-comments' ? '' : `<button class="btn-comment-delete" onclick="deleteComment('${p.id}','${c.id}',this)">🗑️ Xóa</button>`}
+          </div>
+        `).join('')}
+      </div>` : ''}
+      
+      ${!isRemoved ? `<div class="post-actions">
+        <button class="btn-approve" onclick="approvePost('${p.id}', this)" ${isApp ? 'disabled' : ''}>
+          ✅ ${isApp ? 'Đã duyệt' : 'Duyệt bài'}
+        </button>
+        <button class="btn-delete" onclick="deletePost('${p.id}', this)">🗑️ Xoá</button>
+        <button class="btn-remove-post" onclick="deletePost('${p.id}', this)">🗑️ Gỡ bài</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 // ── Approve ───────────────────────────────────────────
