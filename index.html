@@ -62,10 +62,12 @@
   }
   .navbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
   .navbar-logo {
-    width: 34px; height: 34px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--teal), var(--sky));
+    width: 38px; height: 38px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 16px;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .brand-logo-img {
+    width: 100%; height: 100%; object-fit: contain; display: block;
   }
   .brand-logo-img {
     width: 100%; height: 100%;
@@ -278,7 +280,12 @@
     border: 2px solid var(--slate-200); background: white;
     cursor: pointer; transition: all 0.15s; font-family: var(--font-body);
   }
-  .option-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+  @media (hover: hover) {
+    .option-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+  }
+  @media (hover: none) {
+    .option-btn:active { border-color: var(--teal); background: var(--teal-light); }
+  }
   .option-btn.selected { border-color: var(--teal); background: var(--teal-light); box-shadow: 0 0 0 3px rgba(42,191,170,0.15); }
   .option-val { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--teal); }
   .option-label { font-size: 11px; color: var(--slate-600); text-align: center; line-height: 1.3; }
@@ -497,7 +504,7 @@
   @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } .navbar-links { display: none; } }
   .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .footer-brand-logo { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, var(--teal), var(--sky)); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .footer-brand-logo { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .footer-brand-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
   .footer-desc { font-size: 12px; color: #94A3B8; line-height: 1.7; margin-bottom: 12px; }
   .footer-open { font-size: 11px; color: var(--teal); display: flex; align-items: center; gap: 5px; }
@@ -586,6 +593,98 @@
     text-decoration: none;
   }
   .footer-bottom-links .footer-link:hover { color: var(--teal); }
+
+  /* ── TASK 2: Responsive & Typography ─────────── */
+  /* Justify long prose */
+  .content-wrap p, .content-wrap li { text-align: justify; }
+  .section-header { text-align: center; }
+  .about-lead { text-align: justify; }
+
+  /* Smoother base transitions */
+  a, button { transition: all 0.2s ease; }
+
+  /* Mobile navbar */
+  @media (max-width: 640px) {
+    .navbar { padding: 0 16px; height: 54px; }
+    .navbar-name { font-size: 14px; }
+    .btn-anon { padding: 6px 12px; font-size: 12px; }
+    .hero { padding: 48px 20px 40px; }
+    .hero h1 { font-size: clamp(28px, 7vw, 44px); }
+    .hero-sub { font-size: 14px; }
+    .hero-ctas { flex-direction: column; align-items: center; gap: 10px; }
+    .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+    .stats { padding: 28px 16px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+    .section-header { padding: 36px 20px 20px; }
+    .section-title { font-size: 22px; }
+    .quiz-wrap { padding: 0 16px 48px; }
+    .lib-wrap, .comm-wrap, .ref-wrap { padding: 0 16px 48px; }
+    .content-wrap { padding: 16px 20px 56px; }
+    .footer-grid { gap: 28px; }
+    .result-ctas { grid-template-columns: 1fr; }
+    .sos-btn { padding: 10px 16px; font-size: 12px; bottom: 16px; right: 16px; }
+    .trust-badges { gap: 12px; }
+    .ref-tab { font-size: 12px; padding: 8px 8px; }
+    .question-card { padding: 20px 16px; }
+    .options-grid { gap: 8px; }
+    .option-btn { padding: 12px 6px; }
+    .option-val { font-size: 18px; }
+    .option-label { font-size: 10px; }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .navbar { padding: 0 24px; }
+    .hero { padding: 56px 28px 48px; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .content-wrap { padding: 24px 40px 64px; }
+    .footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 28px; }
+  }
+
+  /* Better line-height for readability */
+  .post-content, .acc-intro, .step-text, .result-desc, .result-rec { line-height: 1.8; }
+  .content-wrap p, .content-wrap li { font-size: 14px; line-height: 1.85; color: var(--slate-700); }
+
+
+  /* ── TASK 5: UX Enhancements ─────────────────── */
+  /* Smoother page transitions */
+  .page.active { animation: fadeUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+
+  /* Better focus rings for accessibility */
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Improved accordion transition */
+  .accordion-body { transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* Sticky hover card lift */
+  .post-card { transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+
+  /* Better service card hover on desktop only */
+  @media (hover: hover) {
+    .service-card:hover { transform: translateY(-3px); }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  }
+
+  /* Mobile: remove transform hovers that feel broken on touch */
+  @media (hover: none) {
+    .service-card:hover, .stat-card:hover { transform: none; }
+  }
+
+  /* Smoother quiz card animation */
+  .question-card { animation-duration: 0.24s; }
+
+  /* Better placeholder color */
+  ::placeholder { color: var(--slate-400); opacity: 1; }
+
+  /* Improve accordion chevron */
+  .acc-chevron { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* Content sections spacing */
+  .content-card { margin-bottom: 20px; }
+
 </style>
 </head>
 <body>
@@ -665,27 +764,6 @@
     </div>
   </section>
 
-  <section>
-    <div class="section-header" style="padding-top:40px">
-      <div class="section-tag violet">Về chúng tôi · UniHeal</div>
-      <h2 class="section-title">Về chúng tôi</h2>
-      <p class="section-sub">Từ một ý tưởng khởi nghiệp sinh viên đến nền tảng hỗ trợ tinh thần dành cho cộng đồng học đường.</p>
-    </div>
-    <div class="about-wrap">
-      <div class="about-card">
-        <p class="about-lead"><strong>Người sáng lập UniHeal:</strong> Nguyễn Quang Minh (2005), sinh viên Khoa Xã hội học và Công tác xã hội, Trường Đại học Khoa học Xã hội và Nhân văn, ĐHQGHN.</p>
-        <ul class="about-list">
-          <li>UniHeal bắt nguồn từ ý tưởng khởi nghiệp đạt giải nhì trong cuộc thi “Ý TƯỞNG KHỞI NGHIỆP SINH VIÊN XÃ HỘI HỌC &amp; CÔNG TÁC XÃ HỘI”.</li>
-          <li>Được sự tin tưởng và ngỏ lời từ phía BCH Liên chi Đoàn, Liên chi Hội Khoa Xã hội học và Công tác xã hội, Nguyễn Quang Minh đã phát triển và nâng cấp hệ thống web theo hướng chuyên sâu để phục vụ sinh viên của Khoa và của toàn trường.</li>
-          <li>Trong quá trình xây dựng và thiết lập web, sản phẩm dựa trên nhiều nguồn thông tin khoa học uy tín.</li>
-          <li>Dù đã đi vào vận hành chính thức, UniHeal vẫn cần thêm phản biện và góp ý từ sinh viên trong/ngoài trường, cũng như từ thầy cô trong/ngoài trường để tiếp tục hoàn thiện.</li>
-        </ul>
-        <div class="about-thanks">
-          Cảm ơn Khoa, cảm ơn ngôi trường đang theo học đã tạo nên nguồn cảm hứng học thuật, niềm say mê tìm tòi và khám phá để có được sản phẩm như hôm nay.
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
 
 <!-- ═══════════════════════════════════════════════════
@@ -902,6 +980,79 @@
 </div>
 
 <!-- ── FOOTER ───────────────────────────────────────── -->
+<!-- PAGE: ABOUT -->
+<div class="page" id="page-about">
+  <div class="section-header">
+    <div class="section-tag violet">Về chúng tôi · UniHeal</div>
+    <h2 class="section-title">Giới thiệu UniHeal</h2>
+    <p class="section-sub">Từ một ý tưởng khởi nghiệp sinh viên đến nền tảng hỗ trợ tâm lý sơ cấp dành cho cộng đồng học đường.</p>
+  </div>
+  <div class="content-wrap">
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>🌱 <strong>Bối cảnh hình thành</strong></span>
+      </div>
+      <p>Trong bối cảnh công nghệ số phát triển mạnh mẽ, việc học tập và sinh hoạt của sinh viên ngày càng có nhiều biến đổi phức tạp. Các vấn đề xã hội cần được can thiệp kịp thời, nhu cầu cảm xúc cần được hỗ trợ đúng cách trở nên cần thiết hơn bao giờ hết.</p>
+      <p>Nhận thức được hiện trạng đó, website hỗ trợ tâm lý sơ cấp <strong>UniHeal</strong> được xây dựng với mong muốn trở thành một không gian đồng hành, hỗ trợ và chia sẻ cùng sinh viên trong hành trình chăm sóc và phục hồi sức khỏe tâm thần.</p>
+    </div>
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>🏛️ <strong>Tổ chức điều hành và quản lý</strong></span>
+      </div>
+      <p>Website UniHeal được trực tiếp điều hành và quản lý bởi <strong>Liên chi đoàn – Liên chi hội Khoa Xã hội học và Công tác xã hội</strong>, với định hướng phát triển trở thành một mô hình hỗ trợ thiết thực, gần gũi và bền vững dành cho sinh viên trong và ngoài Khoa.</p>
+      <p>Sự đồng hành của tổ chức Đoàn – Hội không chỉ bảo đảm UniHeal đi đúng hướng và phát huy được tính cộng đồng, mà còn góp phần đưa nền tảng trở thành một mô hình hỗ trợ sinh viên bền vững lâu dài.</p>
+    </div>
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>👤 <strong>Người sáng lập</strong></span>
+      </div>
+      <p>Người trực tiếp khởi xướng và phát triển nền tảng UniHeal là <strong>đồng chí Nguyễn Quang Minh (2005)</strong> — Ủy viên Ban Chấp hành Liên chi hội Khoa Xã hội học và Công tác xã hội, Trường Đại học Khoa học Xã hội và Nhân văn, ĐHQGHN.</p>
+      <p>Với mong muốn tạo ra một nền tảng hỗ trợ tâm lý thân thiện và phù hợp với môi trường đại học, đồng chí Nguyễn Quang Minh đã nghiên cứu, xây dựng và hoàn thiện hệ thống cốt lõi của dự án.</p>
+    </div>
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>🏆 <strong>Nguồn gốc hình thành</strong></span>
+      </div>
+      <p>UniHeal chính là ý tưởng khởi nghiệp đạt <strong>Giải Nhì</strong> trong cuộc thi <em>"Ý tưởng Khởi nghiệp Sinh viên Xã hội học &amp; Công tác xã hội"</em>.</p>
+      <p>Từ một sáng kiến mang tính học thuật và thực tiễn, dự án đã nhận được sự quan tâm, tin tưởng và định hướng phát triển từ Ban Chấp hành Liên chi đoàn – Liên chi hội. Trên cơ sở đó, đồng chí Nguyễn Quang Minh tiếp tục hoàn thiện, phát triển và nâng cấp hệ thống website theo hướng chuyên sâu, nhằm phục vụ tốt hơn cho sinh viên Khoa cũng như sinh viên toàn trường.</p>
+    </div>
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>🎯 <strong>Mục đích và ý nghĩa</strong></span>
+      </div>
+      <p>UniHeal được xây dựng với mục tiêu trở thành nền tảng hỗ trợ tâm lý sơ cấp dành cho sinh viên — nơi cung cấp:</p>
+      <ul>
+        <li>Kiến thức cơ bản về sức khỏe tâm thần và các dấu hiệu nhận biết vấn đề tâm lý thường gặp</li>
+        <li>Phương pháp tự hỗ trợ ban đầu dựa trên cơ sở khoa học</li>
+        <li>Định hướng tìm kiếm sự trợ giúp chuyên nghiệp khi cần thiết</li>
+        <li>Không gian chia sẻ ẩn danh an toàn cho cộng đồng sinh viên</li>
+      </ul>
+      <p>Bên cạnh đó, website hướng đến việc nâng cao nhận thức của sinh viên về tầm quan trọng của sức khỏe tâm thần, góp phần giảm bớt sự e ngại khi nhắc đến các vấn đề tâm lý, xây dựng môi trường học tập tích cực, an toàn và nhân văn.</p>
+      <div class="content-note">💡 <strong>UniHeal không thay thế vai trò của chuyên gia tâm lý</strong>, mà đóng vai trò như một cầu nối ban đầu, giúp sinh viên nhận diện vấn đề và chủ động tìm kiếm sự hỗ trợ kịp thời.</div>
+    </div>
+
+    <div class="content-card" style="margin-bottom:20px">
+      <div class="content-kicker">
+        <span>📢 <strong>Lưu ý</strong></span>
+      </div>
+      <p>Trong quá trình xây dựng và thiết lập website, sản phẩm được phát triển dựa trên các nguồn thông tin khoa học uy tín, có tính tham khảo và ứng dụng thực tiễn cao.</p>
+      <p>Dù đã đi vào vận hành chính thức, UniHeal luôn cần thêm những góp ý, sự phản biện từ sinh viên cũng như từ các thầy cô, chuyên gia trong và ngoài trường để tiếp tục hoàn thiện nền tảng.</p>
+      <p>Sự đồng hành của các bạn sinh viên, thầy cô trong và ngoài trường chính là yếu tố quan trọng giúp UniHeal thực sự trở thành một nền tảng hỗ trợ tâm lý thiết thực, đáng tin cậy và bền vững.</p>
+      <div class="content-actions">
+        <button class="btn-primary" onclick="showPage('community')" style="font-size:13px;padding:10px 20px">💬 Tham gia cộng đồng</button>
+        <a class="btn-outline" href="mailto:qm.uniheal.xhhctxh@gmail.com" style="font-size:13px;padding:10px 20px;text-decoration:none">✉️ Liên hệ chúng tôi</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 <footer>
   <div class="footer-grid">
     <div>
@@ -945,6 +1096,7 @@
     <div class="footer-bottom-row">
       <div class="footer-copy">© 2026 UniHeal. Dự án phi lợi nhuận vì sức khoẻ tâm thần học đường.</div>
       <div class="footer-bottom-links">
+        <button class="footer-link" style="margin:0" onclick="showPage('about')">Về chúng tôi</button>
         <button class="footer-link" style="margin:0" onclick="showPage('privacy')">Chính sách bảo mật</button>
         <button class="footer-link" style="margin:0" onclick="showPage('terms')">Điều khoản</button>
         <button class="footer-link" style="margin:0" onclick="showPage('guidelines')">Quy tắc cộng đồng</button>
@@ -1037,7 +1189,9 @@ async function saveToSheet(type, data) {
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+  const pageEl = document.getElementById('page-' + name);
+  if (!pageEl) return;
+  pageEl.classList.add('active');
   const map = { home: 0, screening: 1, library: 2, community: 3, referral: 4 };
   const links = document.querySelectorAll('.nav-link');
   if (map[name] !== undefined) links[map[name]]?.classList.add('active');
@@ -1134,7 +1288,7 @@ function renderQuestion() {
       <p class="q-text"><strong>Trong 2 tuần vừa qua</strong>, bạn có thường xuyên bị phiền não bởi:<br><em>"${q.text}"</em></p>
       <div class="options-grid">
         ${ANSWER_OPTIONS.map(opt => `
-          <button class="option-btn ${curAns === opt.value ? 'selected' : ''}" onclick="selectAnswer(${opt.value})">
+          <button class="option-btn ${curAns !== -1 && curAns === opt.value ? 'selected' : ''}" onclick="selectAnswer(${opt.value})">
             <span class="option-val">${opt.value}</span>
             <span class="option-label">${opt.label}</span>
           </button>
