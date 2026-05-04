@@ -81,6 +81,22 @@
   .navbar-name { font-family: var(--font-display); font-weight: 700; color: var(--slate-800); font-size: 16px; }
   .navbar-sub { font-size: 10px; color: var(--slate-400); margin-top: -2px; }
   .navbar-links { display: flex; gap: 4px; }
+  .navbar-actions { display: flex; align-items: center; gap: 8px; }
+  .mobile-menu-btn {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--slate-200);
+    background: white;
+    color: var(--slate-700);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .mobile-menu-btn:hover { border-color: var(--teal); color: var(--teal-dark); }
   .nav-link {
     padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 500;
     color: var(--slate-600); cursor: pointer; transition: all 0.2s; border: none; background: none;
@@ -502,7 +518,7 @@
   }
   .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 40px; max-width: 1000px; margin: 0 auto 40px; }
   @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } .navbar-links { display: none; } }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
   .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .footer-brand-logo { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .footer-brand-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
@@ -632,6 +648,50 @@
     .option-label { font-size: 10px; }
   }
 
+  @media (max-width: 768px) {
+    .navbar {
+      position: sticky;
+      overflow: visible;
+    }
+    .navbar-actions { margin-left: auto; }
+    .btn-anon { display: none; }
+    .mobile-menu-btn { display: inline-flex; }
+    .navbar-links {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 12px;
+      right: 12px;
+      z-index: 120;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid var(--slate-200);
+      border-radius: 14px;
+      box-shadow: var(--shadow-md);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(-8px);
+      max-height: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.25s ease, padding 0.25s ease;
+    }
+    .navbar.mobile-open .navbar-links {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 360px;
+      pointer-events: auto;
+    }
+    .navbar-links .nav-link {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+  }
+
   @media (min-width: 641px) and (max-width: 1024px) {
     .navbar { padding: 0 24px; }
     .hero { padding: 56px 28px 48px; }
@@ -700,15 +760,57 @@
       <div class="navbar-sub">Your Safe Space</div>
     </div>
   </a>
-  <div class="navbar-links">
+  <div class="navbar-links" id="navbar-links">
     <button class="nav-link active" onclick="showPage('home')">Trang chủ</button>
     <button class="nav-link" onclick="showPage('screening')">Sàng lọc</button>
     <button class="nav-link" onclick="showPage('library')">Sơ cứu tâm lý</button>
     <button class="nav-link" onclick="showPage('community')">Cộng đồng</button>
     <button class="nav-link" onclick="showPage('referral')">Chuyển tuyến</button>
   </div>
-  <button class="btn-anon" onclick="showPage('home')">→ Đăng nhập ẩn danh</button>
+  <div class="navbar-actions">
+    <button class="btn-anon" onclick="showPage('home')">→ Đăng nhập ẩn danh</button>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" type="button" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="navbar-links">☰</button>
+  </div>
 </nav>
+
+<script>
+  (function () {
+    const navbar = document.querySelector('.navbar');
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menuLinks = document.getElementById('navbar-links');
+    if (!navbar || !menuBtn || !menuLinks) return;
+
+    function isMobile() {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    window.closeMobileMenu = function () {
+      navbar.classList.remove('mobile-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    };
+
+    window.toggleMobileMenu = function () {
+      const willOpen = !navbar.classList.contains('mobile-open');
+      navbar.classList.toggle('mobile-open', willOpen);
+      menuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    };
+
+    menuBtn.addEventListener('click', window.toggleMobileMenu);
+
+    menuLinks.addEventListener('click', (e) => {
+      if (e.target.closest('.nav-link') && isMobile()) window.closeMobileMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      if (!navbar.contains(e.target)) window.closeMobileMenu();
+    });
+
+    window.addEventListener('resize', () => {
+      if (!isMobile()) window.closeMobileMenu();
+    });
+  })();
+</script>
 
 <!-- ── TOAST ───────────────────────────────────────── -->
 <div class="toast" id="toast">
@@ -1167,7 +1269,7 @@ const SESSION_ID = getSessionId();
 //  Thay SCRIPT_URL bằng URL của Apps Script đã deploy
 // ══════════════════════════════════════════════════════
 const SHEET_CONFIG = {
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzvlBwQLUOR2ZKqUPSXSHngY1OvXFiHgQD_1702HimnuNwqT71s2DsyF0YQXg9fotc/exec'
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxiHBbdvvPVfuLSaCTi9iC7cl4bMahsJxw0BUUkR7grYUr3c8gF2Etf_Nl0dk6Trlc/exec'
 };
 
 async function saveToSheet(type, data) {
